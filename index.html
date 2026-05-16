@@ -317,12 +317,21 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
   <!-- CHARTS -->
   <div class="charts-grid">
     <div class="chart-card">
-      <div class="chart-label">Top 10 — F24 Mercadão</div>
-      <div style="position:relative;height:240px"><canvas id="cF24" role="img" aria-label="Top 10 F24"></canvas></div>
+      <div class="chart-label">Garrafas Vendidas — F24 Mercadão</div>
+      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:240px;">
+        <div style="font-size:20px;color:#999;letter-spacing:1px;">Mercadão</div>
+        <div id="f24garrafasChart" style="font-size:82px;font-weight:800;color:#d4a847;margin-top:12px;">0</div>
+        <div style="color:#777;margin-top:6px;">garrafas vendidas</div>
+      </div>
     </div>
+
     <div class="chart-card">
-      <div class="chart-label">Top 10 — F25 Euclides</div>
-      <div style="position:relative;height:240px"><canvas id="cF25" role="img" aria-label="Top 10 F25"></canvas></div>
+      <div class="chart-label">Garrafas Vendidas — F25 Euclides</div>
+      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:240px;">
+        <div style="font-size:20px;color:#999;letter-spacing:1px;">Euclides</div>
+        <div id="f25garrafasChart" style="font-size:82px;font-weight:800;color:#5b8dee;margin-top:12px;">0</div>
+        <div style="color:#777;margin-top:6px;">garrafas vendidas</div>
+      </div>
     </div>
     <div class="chart-card full">
       <div class="chart-label">Estoque por faixa de preço</div>
@@ -527,21 +536,6 @@ const tickStyle={color:'#5a5753',font:{family:mono,size:10}};
 const gridStyle={color:'rgba(255,255,255,0.05)'};
 const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}};
 
-const s24=[...DATA].sort((a,b)=>b.f24ini-a.f24ini).slice(0,10);
-new Chart(document.getElementById('cF24'),{type:'bar',data:{
-  labels:s24.map(d=>d.nome.split(' ').slice(0,3).join(' ')),
-  datasets:[{data:s24.map(d=>d.f24ini),backgroundColor:'rgba(212,168,71,0.65)',borderColor:'#d4a847',borderWidth:1,borderRadius:4}]
-},options:{...base,indexAxis:'y',scales:{x:{grid:gridStyle,ticks:tickStyle},y:{grid:{display:false},ticks:{...tickStyle,font:{family:mono,size:9}}}}}});
-
-const s25=[...DATA].sort((a,b)=>b.f25ini-a.f25ini).slice(0,10);
-new Chart(document.getElementById('cF25'),{type:'bar',data:{
-  labels:s25.map(d=>d.nome.split(' ').slice(0,3).join(' ')),
-  datasets:[{data:s25.map(d=>d.f25ini),backgroundColor:'rgba(91,141,238,0.65)',borderColor:'#5b8dee',borderWidth:1,borderRadius:4}]
-},options:{...base,indexAxis:'y',scales:{x:{grid:gridStyle,ticks:tickStyle},y:{grid:{display:false},ticks:{...tickStyle,font:{family:mono,size:9}}}}}});
-
-const fx=['até R$50','R$51–100','R$101–200','acima R$200'];
-const v24=[0,0,0,0],v25=[0,0,0,0];
-DATA.forEach(d=>{const i=d.pv<=50?0:d.pv<=100?1:d.pv<=200?2:3;v24[i]+=d.f24ini;v25[i]+=d.f25ini;});
 new Chart(document.getElementById('cPV'),{type:'bar',data:{
   labels:fx,
   datasets:[
@@ -551,21 +545,7 @@ new Chart(document.getElementById('cPV'),{type:'bar',data:{
 },options:{...base,scales:{x:{grid:{display:false},ticks:tickStyle},y:{grid:gridStyle,ticks:tickStyle}}}});
 </script>
 
-<section style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;" class="dashboard">
-  <div class="card" style="padding:20px;border:1px solid #d4a63a;border-radius:20px;background:#0b0f16;">
-    <div style="font-size:13px;letter-spacing:1px;color:#999;">QUANTAS GARRAFAS VENDEU F24</div>
-    <div style="font-size:28px;font-weight:700;color:#d4a63a;margin-top:10px;">Mercadão</div>
-    <div id="f24garrafas" style="font-size:54px;font-weight:800;margin-top:10px;">0</div>
-    <div style="color:#777;">garrafas vendidas</div>
-  </div>
 
-  <div class="card" style="padding:20px;border:1px solid #4b79ff;border-radius:20px;background:#0b0f16;">
-    <div style="font-size:13px;letter-spacing:1px;color:#999;">QUANTAS GARRAFAS VENDEU F25</div>
-    <div style="font-size:28px;font-weight:700;color:#4b79ff;margin-top:10px;">Euclides</div>
-    <div id="f25garrafas" style="font-size:54px;font-weight:800;margin-top:10px;">0</div>
-    <div style="color:#777;">garrafas vendidas</div>
-  </div>
-</section>
 
 
 <script>
@@ -573,8 +553,8 @@ try{
 const totalF24 = DATA.reduce((a,b)=>a+(Number(b.f24v)||0),0);
 const totalF25 = DATA.reduce((a,b)=>a+(Number(b.f25v)||0),0);
 
-const f24El=document.getElementById('f24garrafas');
-const f25El=document.getElementById('f25garrafas');
+const f24El=document.getElementById('f24garrafasChart');
+const f25El=document.getElementById('f25garrafasChart');
 
 if(f24El) f24El.innerHTML=totalF24.toLocaleString('pt-BR');
 if(f25El) f25El.innerHTML=totalF25.toLocaleString('pt-BR');
