@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tropa do Giro · Adega Brasil MGA</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:     #0d0f12;
+  --bg2:    #14171c;
+  --bg3:    #1c2028;
+  --border: rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.14);
+  --gold:   #d4a847;
+  --gold2:  #f0c96a;
+  --gold-d: rgba(212,168,71,0.15);
+  --red:    #e05555;
+  --red-d:  rgba(224,85,85,0.14);
+  --blue:   #5b8dee;
+  --blue-d: rgba(91,141,238,0.14);
+  --green:  #4eb87a;
+  --green-d:rgba(78,184,122,0.14);
+  --text:   #edeae4;
+  --text2:  #9a9590;
+  --text3:  #5a5753;
+  --font-h: 'Syne', sans-serif;
+  --font-m: 'IBM Plex Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-m);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* subtle grid bg */
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 28px 16px 72px; }
+
+/* ── HEADER ── */
+.header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 36px; flex-wrap: wrap;
+}
+.eyebrow {
+  font-family: var(--font-m); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--gold); display: inline-block; }
+.title {
+  font-family: var(--font-h); font-size: clamp(32px, 7vw, 52px);
+  font-weight: 800; line-height: 1; color: var(--text); letter-spacing: -0.02em;
+}
+.title .highlight { color: var(--gold); }
+.tagline { font-size: 13px; color: var(--text2); margin-top: 8px; letter-spacing: 0.04em; }
+.date-badge {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 12px 18px; text-align: right; flex-shrink: 0;
+}
+.date-label { font-size: 10px; letter-spacing: 0.14em; color: var(--text3); text-transform: uppercase; margin-bottom: 4px; }
+.date-val { font-family: var(--font-h); font-size: 15px; font-weight: 700; color: var(--gold); }
+
+/* ── KPI GRID ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 32px;
+}
+@media(min-width:600px){ .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+@media(min-width:900px){ .kpi-grid { grid-template-columns: repeat(6, 1fr); } }
+
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 16px;
+  position: relative; overflow: hidden;
+}
+.kpi::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 10px 10px 0 0;
+}
+.kpi.c-gold::before  { background: var(--gold); }
+.kpi.c-red::before   { background: var(--red); }
+.kpi.c-blue::before  { background: var(--blue); }
+.kpi.c-green::before { background: var(--green); }
+
+.kpi-label {
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 10px; line-height: 1.3;
+}
+.kpi-val {
+  font-family: var(--font-h); font-size: 26px; font-weight: 800;
+  line-height: 1; color: var(--text);
+}
+.kpi-val.gold  { color: var(--gold); }
+.kpi-val.red   { color: var(--red); }
+.kpi-val.green { color: var(--green); }
+.kpi-val.blue  { color: var(--blue); }
+.kpi-sub {
+  font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.3;
+}
+
+/* ── ALERT ── */
+.alert {
+  background: var(--red-d); border: 1px solid rgba(224,85,85,0.3);
+  border-radius: 10px; padding: 18px 20px; margin-bottom: 32px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.alert-icon { font-size: 22px; flex-shrink: 0; }
+.alert-strong {
+  font-family: var(--font-h); font-size: 16px; font-weight: 700;
+  color: var(--red); display: block; margin-bottom: 4px;
+}
+.alert-msg { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ── CHARTS ── */
+.charts-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 12px; margin-bottom: 32px;
+}
+@media(min-width:640px){ .charts-grid { grid-template-columns: 1fr 1fr; } }
+
+.chart-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px;
+}
+.chart-card.full { grid-column: 1 / -1; }
+.chart-label {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 16px;
+}
+.chart-legend {
+  display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.chart-legend span {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text2);
+}
+.leg { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* ── SECTION ── */
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; gap: 12px; flex-wrap: wrap;
+}
+.section-title {
+  font-family: var(--font-h); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2);
+  display: flex; align-items: center; gap: 10px;
+}
+.section-title::before {
+  content: ''; width: 4px; height: 16px; background: var(--gold);
+  border-radius: 2px; display: inline-block;
+}
+.count-lbl { font-size: 12px; color: var(--text3); }
+
+/* ── FILTERS ── */
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.filters select, .filters input {
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text); font-family: var(--font-m); font-size: 13px;
+  padding: 9px 13px; border-radius: 7px; outline: none;
+  transition: border-color 0.2s; height: 38px;
+  -webkit-appearance: none;
+}
+.filters select:focus, .filters input:focus { border-color: var(--gold); }
+.filters input { width: 100%; max-width: 220px; }
+
+/* ── TABLE ── */
+.table-outer {
+  border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; overflow-x: auto;
+}
+table {
+  width: 100%; border-collapse: collapse;
+  min-width: 680px;
+}
+thead th {
+  background: var(--bg3); color: var(--text3);
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 13px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap; cursor: pointer; user-select: none;
+  transition: color 0.15s;
+}
+thead th:hover { color: var(--gold); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(212,168,71,0.04); }
+tbody td { padding: 12px 14px; vertical-align: middle; }
+
+.td-cod  { font-size: 11px; color: var(--text3); font-family: var(--font-m); white-space: nowrap; }
+.td-name { font-size: 13px; color: var(--text); line-height: 1.35; max-width: 210px; }
+.td-pv   { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--gold); white-space: nowrap; text-align: right; }
+.td-r    { text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
+.muted   { color: var(--text3); }
+
+/* progress */
+.prog { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.prog-bg { width: 40px; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.prog-fill { height: 5px; border-radius: 3px; }
+.g-fill { background: var(--gold); }
+.b-fill { background: var(--blue); }
+
+/* badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 5px;
+  white-space: nowrap;
+}
+.badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.b-zero    { background: var(--red-d);   color: var(--red);   border: 1px solid rgba(224,85,85,0.22); }
+.b-zero::before  { background: var(--red); }
+.b-parcial { background: rgba(212,168,71,0.14); color: var(--gold);  border: 1px solid rgba(212,168,71,0.22); }
+.b-parcial::before { background: var(--gold); }
+.b-ok      { background: var(--green-d); color: var(--green); border: 1px solid rgba(78,184,122,0.22); }
+.b-ok::before    { background: var(--green); }
+.b-na      { background: rgba(255,255,255,0.04); color: var(--text3); border: 1px solid var(--border); }
+.b-na::before    { background: var(--text3); }
+
+/* empty */
+.empty { text-align: center; padding: 36px; color: var(--text3); font-size: 13px; }
+
+/* footer */
+.footer {
+  border-top: 1px solid var(--border); margin-top: 48px;
+  padding-top: 20px; display: flex; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+.footer-txt { font-size: 11px; color: var(--text3); letter-spacing: 0.06em; }
+
+/* fade-in rows */
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.kpi { animation: fadeUp 0.35s ease both; }
+.kpi:nth-child(1){animation-delay:.04s}.kpi:nth-child(2){animation-delay:.08s}
+.kpi:nth-child(3){animation-delay:.12s}.kpi:nth-child(4){animation-delay:.16s}
+.kpi:nth-child(5){animation-delay:.20s}.kpi:nth-child(6){animation-delay:.24s}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div>
+      <div class="eyebrow">Adega Brasil MGA · Projeto 105</div>
+      <h1 class="title">Tropa do<br><span class="highlight">Giro</span></h1>
+      <p class="tagline">F24 Mercadão &nbsp;·&nbsp; F25 Euclides &nbsp;·&nbsp; F26 Atacado</p>
+    </div>
+    <div class="date-badge">
+      <div class="date-label">Gerado em</div>
+      <div class="date-val" id="dateVal">—</div>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- ALERTA -->
+  <div class="alert" id="alertBox" style="display:none">
+    <div class="alert-icon">⚠</div>
+    <div>
+      <strong class="alert-strong" id="alertTitle"></strong>
+      <span class="alert-msg" id="alertMsg"></span>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-label">Top 10 — F24 Mercadão</div>
+      <div style="position:relative;height:240px"><canvas id="cF24" role="img" aria-label="Top 10 F24"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-label">Top 10 — F25 Euclides</div>
+      <div style="position:relative;height:240px"><canvas id="cF25" role="img" aria-label="Top 10 F25"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-label">Estoque por faixa de preço</div>
+      <div class="chart-legend">
+        <span><span class="leg" style="background:var(--gold)"></span>F24 Mercadão</span>
+        <span><span class="leg" style="background:var(--blue)"></span>F25 Euclides</span>
+      </div>
+      <div style="position:relative;height:180px"><canvas id="cPV" role="img" aria-label="Distribuição por faixa de preço"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div>
+    <div class="section-head">
+      <div class="section-title">Todos os produtos</div>
+      <span class="count-lbl" id="countLbl"></span>
+    </div>
+    <div class="filters">
+      <select id="filFilter">
+        <option value="all">Todas as filiais</option>
+        <option value="f24">F24 – Mercadão</option>
+        <option value="f25">F25 – Euclides</option>
+      </select>
+      <select id="stFilter">
+        <option value="all">Todos os status</option>
+        <option value="zero">Sem venda</option>
+        <option value="parcial">Venda parcial</option>
+        <option value="ok">Vendido</option>
+      </select>
+      <input id="search" type="text" placeholder="Buscar produto ou código...">
+    </div>
+    <div class="table-outer">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="srt('cod')">Cód</th>
+            <th onclick="srt('nome')">Produto</th>
+            <th onclick="srt('pv')" style="text-align:right">PV</th>
+            <th style="text-align:right">F24 Est</th>
+            <th style="text-align:right">F24 Vend</th>
+            <th style="text-align:right">F25 Est</th>
+            <th style="text-align:right">F25 Vend</th>
+            <th style="text-align:right">F26</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-txt">Tropa do Giro · Adega Brasil MGA</span>
+    <span class="footer-txt" id="footerTxt"></span>
+  </div>
+
+</div>
+<script>
+const DATA=[
+  {cod:"271464",nome:"Aldeias das Serras Dao Tto · Por",pv:34.90,f24ini:4,f24v:0,f25ini:4,f25v:0,f26:0},
+  {cod:"23916",nome:"Alta Vista Estate Cab Sauv · Arg",pv:59.90,f24ini:2,f24v:0,f25ini:0,f25v:0,f26:0},
+  {cod:"293946",nome:"Altano Symington Tto · Por",pv:84.90,f24ini:5,f24v:0,f25ini:2,f25v:0,f26:18},
+  {cod:"41068",nome:"Aniello Tto Malbec · Arg",pv:68.90,f24ini:0,f24v:0,f25ini:3,f25v:0,f26:0},
+  {cod:"277674",nome:"Aruma Malbec · Arg",pv:129.00,f24ini:0,f24v:0,f25ini:5,f25v:0,f26:0},
+  {cod:"41296",nome:"Aventura · Por",pv:99.00,f24ini:3,f24v:0,f25ini:6,f25v:0,f26:11},
+  {cod:"278091",nome:"Bacalhoa Dom Martino Tto · Por",pv:104.00,f24ini:1,f24v:0,f25ini:3,f25v:0,f26:0},
+  {cod:"279093",nome:"Callia Alta Syrah/Bonarda · Arg",pv:49.90,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"42060",nome:"Cara Sucia Blend Tinto · Arg",pv:82.90,f24ini:5,f24v:0,f25ini:2,f25v:0,f26:15},
+  {cod:"42073",nome:"Cara Sucia Sangiovese · Arg",pv:82.90,f24ini:4,f24v:0,f25ini:5,f25v:0,f26:6},
+  {cod:"41681",nome:"Carm Douro Tto Res · Por",pv:139.00,f24ini:5,f24v:0,f25ini:2,f25v:0,f26:12},
+  {cod:"24191",nome:"Carmen Insigne Cab Sauv · Chi",pv:74.90,f24ini:2,f24v:0,f25ini:5,f25v:0,f26:29},
+  {cod:"250209",nome:"Cono Sur Cab Sauv 1551 · Chi",pv:35.90,f24ini:0,f24v:0,f25ini:6,f25v:0,f26:0},
+  {cod:"40950",nome:"Dourosa · Por",pv:82.00,f24ini:2,f24v:0,f25ini:4,f25v:0,f26:35},
+  {cod:"255353",nome:"Emiliana Carmenere · Chi",pv:32.00,f24ini:0,f24v:0,f25ini:3,f25v:0,f26:0},
+  {cod:"40484",nome:"Estiba I Cab Sauv · Arg",pv:69.90,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"41836",nome:"Falorca T Nac · Por",pv:159.00,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"274431",nome:"Garzon Estate Cab Corte · Uru",pv:72.90,f24ini:5,f24v:0,f25ini:3,f25v:0,f26:10},
+  {cod:"252506",nome:"Las Liebres Bonarda · Arg",pv:62.90,f24ini:0,f24v:0,f25ini:3,f25v:0,f26:0},
+  {cod:"293935",nome:"Luis Pato Baga Touri Nac · Por",pv:119.00,f24ini:5,f24v:0,f25ini:1,f25v:0,f26:10},
+  {cod:"291022",nome:"Marques Atrio Rioja Crianza · Esp",pv:129.00,f24ini:0,f24v:0,f25ini:1,f25v:0,f26:0},
+  {cod:"250839",nome:"Marques Casa Concha P Noir · Chi",pv:109.00,f24ini:1,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"41540",nome:"Miguel T Millapoa Bio Bio · Chi",pv:149.00,f24ini:5,f24v:0,f25ini:5,f25v:0,f26:21},
+  {cod:"269092",nome:"Montes Clas Res Cab Sauv · Chi",pv:99.00,f24ini:3,f24v:0,f25ini:2,f25v:0,f26:17},
+  {cod:"41218",nome:"Montes Seleccion Limitada · Chi",pv:99.00,f24ini:3,f24v:0,f25ini:2,f25v:0,f26:17},
+  {cod:"299619",nome:"Montes Twins Tto · Chi",pv:105.00,f24ini:2,f24v:0,f25ini:2,f25v:0,f26:6},
+  {cod:"24268",nome:"Nampe Tempranillo · Arg",pv:39.90,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"41298",nome:"O Leao Red Blend · Chi",pv:109.00,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"291042",nome:"Obikwa Merlot · Afr",pv:52.90,f24ini:4,f24v:0,f25ini:6,f25v:0,f26:29},
+  {cod:"286282",nome:"Procura Vinhas Velhas Tto · Por",pv:299.00,f24ini:1,f24v:0,f25ini:3,f25v:0,f26:9},
+  {cod:"41402",nome:"Protagonista Antigua Bodega · Uru",pv:179.00,f24ini:4,f24v:0,f25ini:4,f25v:0,f26:12},
+  {cod:"41096",nome:"Quinta Chocapalha · Por",pv:89.00,f24ini:6,f24v:0,f25ini:2,f25v:0,f26:6},
+  {cod:"41730",nome:"Ramon Roqueta Crianza · Esp",pv:69.00,f24ini:5,f24v:0,f25ini:3,f25v:0,f26:13},
+  {cod:"41731",nome:"Ramon Roqueta Res · Esp",pv:69.00,f24ini:5,f24v:0,f25ini:1,f25v:0,f26:5},
+  {cod:"252238",nome:"Ruca Malen Cab Sauv · Arg",pv:85.00,f24ini:3,f24v:0,f25ini:3,f25v:0,f26:0},
+  {cod:"252239",nome:"Ruca Malen Malbec · Arg",pv:99.00,f24ini:4,f24v:0,f25ini:5,f25v:0,f26:0},
+  {cod:"279453",nome:"Salentein Numina Gran Corte · Arg",pv:229.00,f24ini:3,f24v:0,f25ini:4,f25v:0,f26:3},
+  {cod:"269783",nome:"Seival Tempranillo · Bra",pv:29.90,f24ini:6,f24v:0,f25ini:6,f25v:0,f26:21},
+  {cod:"282769",nome:"Terranoble Res Cab Sauv · Chi",pv:59.90,f24ini:3,f24v:0,f25ini:3,f25v:0,f26:0},
+  {cod:"41700",nome:"Terranoble Res Merlot · Chi",pv:59.90,f24ini:1,f24v:0,f25ini:5,f25v:0,f26:6},
+  {cod:"282770",nome:"Terranoble Res Sauv Blanc · Chi",pv:59.90,f24ini:8,f24v:0,f25ini:5,f25v:0,f26:2},
+  {cod:"308270",nome:"Terras Santar Tto · Por",pv:44.90,f24ini:6,f24v:0,f25ini:5,f25v:0,f26:26},
+  {cod:"295039",nome:"Tinto Negro Malbec · Arg",pv:49.00,f24ini:2,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"41224",nome:"Uxmal Alto Cab Sauv/Merlot · Arg",pv:79.00,f24ini:9,f24v:0,f25ini:6,f25v:0,f26:6},
+  {cod:"41847",nome:"Val da Ucha Dao Doc · Por",pv:49.90,f24ini:4,f24v:0,f25ini:3,f25v:0,f26:39},
+  {cod:"295101",nome:"Veo Organico Cab Sauv · Chi",pv:49.90,f24ini:0,f24v:0,f25ini:4,f25v:0,f26:0},
+  {cod:"277743",nome:"Vigno Carignan Tto · Chi",pv:98.00,f24ini:11,f24v:0,f25ini:3,f25v:0,f26:29},
+  {cod:"41120",nome:"Vina Maipo Protegid Cab Sauv · Chi",pv:359.00,f24ini:6,f24v:0,f25ini:19,f25v:0,f26:0},
+  {cod:"290842",nome:"Zuccardi Concreto Malbec · Arg",pv:289.00,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
+  {cod:"290844",nome:"Zuccardi Poligono Malb Gualt · Arg",pv:329.00,f24ini:0,f24v:0,f25ini:4,f25v:0,f26:0},
+];
+
+// DATE
+const now=new Date();
+document.getElementById('dateVal').textContent=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+document.getElementById('footerTxt').textContent='Semana '+now.toLocaleDateString('pt-BR');
+
+// HELPERS
+function status(d,fil){
+  if(fil==='f24'){const i=d.f24ini,v=d.f24v;if(!i)return'na';if(v>=i)return'ok';if(v>0)return'parcial';return'zero';}
+  if(fil==='f25'){const i=d.f25ini,v=d.f25v;if(!i)return'na';if(v>=i)return'ok';if(v>0)return'parcial';return'zero';}
+  const i=d.f24ini+d.f25ini,v=d.f24v+d.f25v;
+  if(!i)return'na';if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
+}
+
+// KPIs
+const tot24=DATA.reduce((s,d)=>s+d.f24ini,0);
+const tot25=DATA.reduce((s,d)=>s+d.f25ini,0);
+const tot26=DATA.reduce((s,d)=>s+d.f26,0);
+const cap=DATA.reduce((s,d)=>s+(d.f24ini+d.f25ini)*d.pv,0);
+const sv=DATA.filter(d=>!d.f24v&&!d.f25v&&(d.f24ini+d.f25ini)>0).length;
+const pct=Math.round(sv/DATA.length*100);
+
+document.getElementById('kpiGrid').innerHTML=`
+<div class="kpi c-gold"><div class="kpi-label">Produtos monitorados</div><div class="kpi-val gold">${DATA.length}</div><div class="kpi-sub">SKUs únicos</div></div>
+<div class="kpi c-gold"><div class="kpi-label">Estoque F24</div><div class="kpi-val">${tot24}</div><div class="kpi-sub">Mercadão</div></div>
+<div class="kpi c-blue"><div class="kpi-label">Estoque F25</div><div class="kpi-val blue">${tot25}</div><div class="kpi-sub">Euclides</div></div>
+<div class="kpi c-green"><div class="kpi-label">Atacado F26</div><div class="kpi-val green">${tot26}</div><div class="kpi-sub">Unidades</div></div>
+<div class="kpi c-red"><div class="kpi-label">Capital parado</div><div class="kpi-val red">R$&nbsp;${Math.round(cap/1000)}k</div><div class="kpi-sub">F24+F25 × PV</div></div>
+<div class="kpi c-red"><div class="kpi-label">Sem venda</div><div class="kpi-val red">${sv} <span style="font-size:15px;color:var(--text3)">(${pct}%)</span></div><div class="kpi-sub">produtos parados</div></div>
+`;
+
+if(sv>0){
+  document.getElementById('alertBox').style.display='flex';
+  document.getElementById('alertTitle').textContent=`${sv} produto${sv>1?'s':''} sem nenhuma venda registrada`;
+  document.getElementById('alertMsg').textContent=`Esses itens estão com estoque ativo mas sem saída no período. Capital estimado parado: R$ ${cap.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}. Acionar equipe comercial.`;
+}
+
+// TABLE
+let sk='',sd=1;
+function srt(k){sk===k?sd*=-1:(sk=k,sd=1);render();}
+
+function badgeHtml(st){
+  if(st==='zero')return'<span class="badge b-zero">Sem venda</span>';
+  if(st==='parcial')return'<span class="badge b-parcial">Parcial</span>';
+  if(st==='ok')return'<span class="badge b-ok">Vendido</span>';
+  return'<span class="badge b-na">—</span>';
+}
+
+function render(){
+  const fil=document.getElementById('filFilter').value;
+  const st=document.getElementById('stFilter').value;
+  const q=document.getElementById('search').value.toLowerCase();
+  let d=[...DATA];
+  if(q) d=d.filter(x=>x.nome.toLowerCase().includes(q)||x.cod.includes(q));
+  if(st!=='all') d=d.filter(x=>status(x,fil)===st);
+  if(fil==='f24') d=d.filter(x=>x.f24ini>0||x.f24v>0);
+  if(fil==='f25') d=d.filter(x=>x.f25ini>0||x.f25v>0);
+  if(sk) d.sort((a,b)=>{
+    let av=sk==='pv'?a.pv:sk==='cod'?a.cod:a.nome;
+    let bv=sk==='pv'?b.pv:sk==='cod'?b.cod:b.nome;
+    return(typeof av==='number'?(av-bv):(av.localeCompare(bv)))*sd;
+  });
+  document.getElementById('countLbl').textContent=`${d.length} produto${d.length!==1?'s':''}`;
+  const tb=document.getElementById('tbody');
+  if(!d.length){tb.innerHTML='<tr><td colspan="9" class="empty">Nenhum produto encontrado.</td></tr>';return;}
+  tb.innerHTML=d.map(x=>{
+    const p4=x.f24ini?Math.round(x.f24v/x.f24ini*100):0;
+    const p5=x.f25ini?Math.round(x.f25v/x.f25ini*100):0;
+    const n4=x.f24ini||'<span class="muted">—</span>';
+    const n5=x.f25ini||'<span class="muted">—</span>';
+    const n6=x.f26||'<span class="muted">—</span>';
+    return`<tr>
+<td class="td-cod">${x.cod}</td>
+<td class="td-name">${x.nome}</td>
+<td class="td-pv">R$&nbsp;${x.pv.toFixed(2).replace('.',',')}</td>
+<td class="td-r">${n4}</td>
+<td class="td-r"><div class="prog"><span>${x.f24v}</span><div class="prog-bg"><div class="prog-fill g-fill" style="width:${p4}%"></div></div></div></td>
+<td class="td-r">${n5}</td>
+<td class="td-r"><div class="prog"><span>${x.f25v}</span><div class="prog-bg"><div class="prog-fill b-fill" style="width:${p5}%"></div></div></div></td>
+<td class="td-r">${n6}</td>
+<td>${badgeHtml(status(x,fil))}</td>
+</tr>`;
+  }).join('');
+}
+['filFilter','stFilter','search'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+render();
+
+// CHARTS
+const mono="'IBM Plex Mono',monospace";
+const tickStyle={color:'#5a5753',font:{family:mono,size:10}};
+const gridStyle={color:'rgba(255,255,255,0.05)'};
+const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}};
+
+const s24=[...DATA].sort((a,b)=>b.f24ini-a.f24ini).slice(0,10);
+new Chart(document.getElementById('cF24'),{type:'bar',data:{
+  labels:s24.map(d=>d.nome.split(' ').slice(0,3).join(' ')),
+  datasets:[{data:s24.map(d=>d.f24ini),backgroundColor:'rgba(212,168,71,0.65)',borderColor:'#d4a847',borderWidth:1,borderRadius:4}]
+},options:{...base,indexAxis:'y',scales:{x:{grid:gridStyle,ticks:tickStyle},y:{grid:{display:false},ticks:{...tickStyle,font:{family:mono,size:9}}}}}});
+
+const s25=[...DATA].sort((a,b)=>b.f25ini-a.f25ini).slice(0,10);
+new Chart(document.getElementById('cF25'),{type:'bar',data:{
+  labels:s25.map(d=>d.nome.split(' ').slice(0,3).join(' ')),
+  datasets:[{data:s25.map(d=>d.f25ini),backgroundColor:'rgba(91,141,238,0.65)',borderColor:'#5b8dee',borderWidth:1,borderRadius:4}]
+},options:{...base,indexAxis:'y',scales:{x:{grid:gridStyle,ticks:tickStyle},y:{grid:{display:false},ticks:{...tickStyle,font:{family:mono,size:9}}}}}});
+
+const fx=['até R$50','R$51–100','R$101–200','acima R$200'];
+const v24=[0,0,0,0],v25=[0,0,0,0];
+DATA.forEach(d=>{const i=d.pv<=50?0:d.pv<=100?1:d.pv<=200?2:3;v24[i]+=d.f24ini;v25[i]+=d.f25ini;});
+new Chart(document.getElementById('cPV'),{type:'bar',data:{
+  labels:fx,
+  datasets:[
+    {label:'F24',data:v24,backgroundColor:'rgba(212,168,71,0.65)',borderColor:'#d4a847',borderWidth:1,borderRadius:4},
+    {label:'F25',data:v25,backgroundColor:'rgba(91,141,238,0.65)',borderColor:'#5b8dee',borderWidth:1,borderRadius:4}
+  ]
+},options:{...base,scales:{x:{grid:{display:false},ticks:tickStyle},y:{grid:gridStyle,ticks:tickStyle}}}});
+</script>
+</body>
+</html>
