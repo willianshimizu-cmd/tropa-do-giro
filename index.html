@@ -237,6 +237,23 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
 .b-ok::before    { background: var(--green); }
 .b-na      { background: rgba(255,255,255,0.04); color: var(--text3); border: 1px solid var(--border); }
 .b-na::before    { background: var(--text3); }
+.b-trans   { background: rgba(91,141,238,0.14); color: var(--blue); border: 1px solid rgba(91,141,238,0.3); }
+.b-trans::before { background: var(--blue); }
+
+/* novo produto */
+.tag-novo {
+  display: inline-flex; align-items: center;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+  background: rgba(78,184,122,0.18); color: var(--green);
+  border: 1px solid rgba(78,184,122,0.35);
+  vertical-align: middle; margin-left: 7px; white-space: nowrap;
+  animation: pulse-new 2s ease infinite;
+}
+@keyframes pulse-new {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
 
 /* empty */
 .empty { text-align: center; padding: 36px; color: var(--text3); font-size: 13px; }
@@ -360,6 +377,8 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
         <option value="zero">Sem venda</option>
         <option value="parcial">Venda parcial</option>
         <option value="ok">Vendido</option>
+        <option value="trans">Transferir F26</option>
+        <option value="novo">✦ Produtos novos</option>
       </select>
       <input id="search" type="text" placeholder="Buscar produto ou código...">
     </div>
@@ -391,6 +410,10 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
 
 </div>
 <script>
+// Códigos conhecidos desde o início do projeto (13/05/2026).
+// Qualquer cod fora desta lista será marcado como NOVO.
+const KNOWN_CODES=new Set(["271464","23916","293946","41068","277674","41296","278091","279093","42060","42073","41681","24191","250209","40950","255353","40484","41836","274431","252506","293935","291022","250839","41540","269092","41218","299619","24268","41298","291042","286282","41402","41096","41730","41731","252238","252239","279453","269783","282769","41700","282770","308270","295039","41224","41847","295101","277743","41120","290842","290844"]);
+
 const DATA=[
   {cod:"271464",nome:"Aldeias das Serras Dao Tto · Por",pv:34.9,f24ini:0,f24v:0,f25ini:4,f25v:0,f26:0},
   {cod:"23916",nome:"Alta Vista Estate Cab Sauv · Arg",pv:59.9,f24ini:2,f24v:1,f25ini:0,f25v:0,f26:0},
@@ -451,10 +474,22 @@ document.getElementById('footerTxt').textContent='Semana '+now.toLocaleDateStrin
 
 // HELPERS
 function status(d,fil){
-  if(fil==='f24'){const i=d.f24ini,v=d.f24v;if(!i)return'na';if(v>=i)return'ok';if(v>0)return'parcial';return'zero';}
-  if(fil==='f25'){const i=d.f25ini,v=d.f25v;if(!i)return'na';if(v>=i)return'ok';if(v>0)return'parcial';return'zero';}
+  if(fil==='f24'){
+    const i=d.f24ini,v=d.f24v;
+    if(!i && d.f26>0) return'trans';
+    if(!i)return'na';
+    if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
+  }
+  if(fil==='f25'){
+    const i=d.f25ini,v=d.f25v;
+    if(!i && d.f26>0) return'trans';
+    if(!i)return'na';
+    if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
+  }
   const i=d.f24ini+d.f25ini,v=d.f24v+d.f25v;
-  if(!i)return'na';if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
+  if(!i && d.f26>0) return'trans';
+  if(!i)return'na';
+  if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
 }
 
 // KPIs
@@ -488,6 +523,7 @@ function badgeHtml(st){
   if(st==='zero')return'<span class="badge b-zero">Sem venda</span>';
   if(st==='parcial')return'<span class="badge b-parcial">Parcial</span>';
   if(st==='ok')return'<span class="badge b-ok">Vendido</span>';
+  if(st==='trans')return'<span class="badge b-trans">↗ Transferir F26</span>';
   return'<span class="badge b-na">—</span>';
 }
 
@@ -497,7 +533,8 @@ function render(){
   const q=document.getElementById('search').value.toLowerCase();
   let d=[...DATA];
   if(q) d=d.filter(x=>x.nome.toLowerCase().includes(q)||x.cod.includes(q));
-  if(st!=='all') d=d.filter(x=>status(x,fil)===st);
+  if(st==='novo') d=d.filter(x=>!KNOWN_CODES.has(x.cod));
+  else if(st!=='all') d=d.filter(x=>status(x,fil)===st);
   if(fil==='f24') d=d.filter(x=>x.f24ini>0||x.f24v>0);
   if(fil==='f25') d=d.filter(x=>x.f25ini>0||x.f25v>0);
   if(sk) d.sort((a,b)=>{
@@ -514,9 +551,10 @@ function render(){
     const n4=x.f24ini||'<span class="muted">—</span>';
     const n5=x.f25ini||'<span class="muted">—</span>';
     const n6=x.f26||'<span class="muted">—</span>';
+    const novoTag=!KNOWN_CODES.has(x.cod)?'<span class="tag-novo">✦ Novo</span>':'';
     return`<tr>
 <td class="td-cod">${x.cod}</td>
-<td class="td-name">${x.nome}</td>
+<td class="td-name">${x.nome}${novoTag}</td>
 <td class="td-pv">R$&nbsp;${x.pv.toFixed(2).replace('.',',')}</td>
 <td class="td-r">${n4}</td>
 <td class="td-r"><div class="prog"><span>${x.f24v}</span><div class="prog-bg"><div class="prog-fill g-fill" style="width:${p4}%"></div></div></div></td>
