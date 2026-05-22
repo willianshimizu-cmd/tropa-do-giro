@@ -22,6 +22,8 @@
   --blue-d: rgba(91,141,238,0.14);
   --green:  #4eb87a;
   --green-d:rgba(78,184,122,0.14);
+  --orange: #e07c3a;
+  --orange-d:rgba(224,124,58,0.14);
   --text:   #edeae4;
   --text2:  #9a9590;
   --text3:  #5a5753;
@@ -39,8 +41,6 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-
-/* subtle grid bg */
 body::after {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
@@ -50,174 +50,158 @@ body::after {
   background-size: 48px 48px;
 }
 
-.wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 28px 16px 72px; }
+/* layout */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
-/* ── HEADER ── */
+/* header */
 .header {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 16px; margin-bottom: 36px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border2);
+  padding: 28px 0 20px;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
 }
-.eyebrow {
-  font-family: var(--font-m); font-size: 11px; font-weight: 500;
-  letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase;
-  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-}
-.eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--gold); display: inline-block; }
-.title {
-  font-family: var(--font-h); font-size: clamp(32px, 7vw, 52px);
-  font-weight: 800; line-height: 1; color: var(--text); letter-spacing: -0.02em;
-}
-.title .highlight { color: var(--gold); }
-.tagline { font-size: 13px; color: var(--text2); margin-top: 8px; letter-spacing: 0.04em; }
+.header-title { font-family: var(--font-h); font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+.header-title span { color: var(--gold); }
 .date-badge {
-  background: var(--bg2); border: 1px solid var(--border2);
-  border-radius: 6px; padding: 12px 18px; text-align: right; flex-shrink: 0;
+  font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 5px 12px; border-radius: 6px;
 }
-.date-label { font-size: 10px; letter-spacing: 0.14em; color: var(--text3); text-transform: uppercase; margin-bottom: 4px; }
-.date-val { font-family: var(--font-h); font-size: 15px; font-weight: 700; color: var(--gold); }
 
-/* ── KPI GRID ── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 32px;
-}
-@media(min-width:600px){ .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-@media(min-width:900px){ .kpi-grid { grid-template-columns: repeat(6, 1fr); } }
-
+/* KPIs */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 24px 0 0; }
 .kpi {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px 16px;
-  position: relative; overflow: hidden;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
 }
-.kpi::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  border-radius: 10px 10px 0 0;
-}
-.kpi.c-gold::before  { background: var(--gold); }
-.kpi.c-red::before   { background: var(--red); }
-.kpi.c-blue::before  { background: var(--blue); }
-.kpi.c-green::before { background: var(--green); }
+.kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 6px; }
+.kpi-val { font-family: var(--font-h); font-size: 28px; font-weight: 800; line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.gold { color: var(--gold); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.blue { color: var(--blue); }
+.orange { color: var(--orange); }
 
-.kpi-label {
-  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 10px; line-height: 1.3;
-}
-.kpi-val {
-  font-family: var(--font-h); font-size: 26px; font-weight: 800;
-  line-height: 1; color: var(--text);
-}
-.kpi-val.gold  { color: var(--gold); }
-.kpi-val.red   { color: var(--red); }
-.kpi-val.green { color: var(--green); }
-.kpi-val.blue  { color: var(--blue); }
-.kpi-sub {
-  font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.3;
-}
-
-/* ── ALERT ── */
-.alert {
-  background: var(--red-d); border: 1px solid rgba(224,85,85,0.3);
-  border-radius: 10px; padding: 18px 20px; margin-bottom: 32px;
-  display: flex; gap: 14px; align-items: flex-start;
-}
-.alert-icon { font-size: 22px; flex-shrink: 0; }
-.alert-strong {
-  font-family: var(--font-h); font-size: 16px; font-weight: 700;
-  color: var(--red); display: block; margin-bottom: 4px;
-}
-.alert-msg { font-size: 13px; color: var(--text2); line-height: 1.6; }
-
-/* ── CHARTS ── */
-.charts-grid {
-  display: grid; grid-template-columns: 1fr;
-  gap: 12px; margin-bottom: 32px;
-}
-@media(min-width:640px){ .charts-grid { grid-template-columns: 1fr 1fr; } }
-
+/* charts */
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 24px 0 0; }
 .chart-card {
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 10px; padding: 20px;
+  border-radius: 10px; padding: 18px 20px;
 }
-.chart-card.full { grid-column: 1 / -1; }
-.chart-label {
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 16px;
-}
-.chart-legend {
-  display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;
-}
-.chart-legend span {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--text2);
-}
-.leg { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.chart-card.full { grid-column: 1/-1; }
+.chart-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 12px; }
+.chart-legend { display: flex; gap: 16px; margin-bottom: 10px; font-size: 11px; color: var(--text2); }
+.leg { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
 
-/* ── SECTION ── */
-.section-head {
+/* filial big-number cards */
+.filial-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 24px 0 0; }
+.filial-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px 28px 20px;
+  display: flex; flex-direction: column;
+}
+.filial-card-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text3); margin-bottom: 14px;
+}
+.filial-card-name {
+  font-family: var(--font-h); font-size: 20px; font-weight: 800; margin-bottom: 8px;
+}
+.filial-card-num {
+  font-family: var(--font-h); font-size: 76px; font-weight: 800; line-height: 1; margin-bottom: 4px;
+}
+.filial-card-sub { font-size: 12px; color: var(--text3); margin-bottom: 18px; }
+.filial-card-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 16px; }
+.filial-card-row { display: flex; align-items: baseline; gap: 8px; }
+.filial-card-row-num {
+  font-family: var(--font-h); font-size: 34px; font-weight: 800; line-height: 1;
+}
+.filial-card-row-label { font-size: 12px; color: var(--text3); }
+@media (max-width: 600px) {
+  .filial-cards { grid-template-columns: 1fr; }
+  .filial-card-num { font-size: 54px; }
+}
+
+/* rotulos monitoring card */
+.rot-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+}
+.rot-col {
+  padding: 12px 0 4px;
+}
+.rot-col:first-child { border-right: 1px solid var(--border); padding-right: 28px; }
+.rot-col:last-child  { padding-left: 28px; }
+.rot-col-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.rot-col-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rot-col-title { font-family: var(--font-h); font-size: 15px; font-weight: 700; }
+.rot-row {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px; gap: 12px; flex-wrap: wrap;
+  padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px;
 }
-.section-title {
-  font-family: var(--font-h); font-size: 14px; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2);
-  display: flex; align-items: center; gap: 10px;
+.rot-row:last-child { border-bottom: none; }
+.rot-row-nome { color: var(--text2); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+.rot-row-bar-wrap { flex: 1; margin: 0 12px; }
+.rot-row-bar-bg { height: 4px; background: var(--bg3); border-radius: 2px; }
+.rot-row-bar-fill { height: 4px; border-radius: 2px; }
+.rot-row-num { font-family: var(--font-h); font-size: 13px; font-weight: 700; min-width: 24px; text-align: right; }
+.rot-summary {
+  display: flex; gap: 24px; margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid var(--border2);
 }
-.section-title::before {
-  content: ''; width: 4px; height: 16px; background: var(--gold);
-  border-radius: 2px; display: inline-block;
+.rot-summary-item { display: flex; flex-direction: column; gap: 2px; }
+.rot-summary-val { font-family: var(--font-h); font-size: 22px; font-weight: 800; }
+.rot-summary-label { font-size: 11px; color: var(--text3); }
+@media (max-width: 640px) {
+  .rot-grid { grid-template-columns: 1fr; }
+  .rot-col:first-child { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 16px; }
+  .rot-col:last-child { padding-left: 0; padding-top: 16px; }
 }
-.count-lbl { font-size: 12px; color: var(--text3); }
 
-/* ── FILTERS ── */
-.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+/* section */
+.section-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 28px 0 14px;
+}
+.section-title { font-family: var(--font-h); font-size: 17px; font-weight: 700; }
+.count-lbl { font-size: 12px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+
+/* filters */
+.filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 .filters select, .filters input {
   background: var(--bg2); border: 1px solid var(--border2);
   color: var(--text); font-family: var(--font-m); font-size: 13px;
-  padding: 9px 13px; border-radius: 7px; outline: none;
-  transition: border-color 0.2s; height: 38px;
-  -webkit-appearance: none;
+  padding: 8px 12px; border-radius: 7px; outline: none;
+  cursor: pointer;
 }
 .filters select:focus, .filters input:focus { border-color: var(--gold); }
-.filters input { width: 100%; max-width: 220px; }
+.filters input { min-width: 220px; }
 
-/* ── TABLE ── */
-.table-outer {
-  border: 1px solid var(--border); border-radius: 10px;
-  overflow: hidden; overflow-x: auto;
-}
-table {
-  width: 100%; border-collapse: collapse;
-  min-width: 680px;
-}
+/* table */
+.table-outer { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead th {
-  background: var(--bg3); color: var(--text3);
-  font-family: var(--font-m); font-size: 10px;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  padding: 13px 14px; text-align: left;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap; cursor: pointer; user-select: none;
-  transition: color 0.15s;
+  background: var(--bg3); padding: 11px 14px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text3); font-weight: 500; text-align: left;
+  cursor: pointer; user-select: none; white-space: nowrap;
 }
-thead th:hover { color: var(--gold); }
-tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: rgba(212,168,71,0.04); }
-tbody td { padding: 12px 14px; vertical-align: middle; }
+thead th:hover { color: var(--text2); }
+tbody tr { border-top: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:hover { background: var(--bg3); }
+tbody td { padding: 11px 14px; vertical-align: middle; }
+.td-cod { font-size: 11px; color: var(--text3); white-space: nowrap; }
+.td-name { font-size: 13px; max-width: 260px; }
+.td-r { text-align: right; white-space: nowrap; }
+.muted { color: var(--text3); }
 
-.td-cod  { font-size: 11px; color: var(--text3); font-family: var(--font-m); white-space: nowrap; }
-.td-name { font-size: 13px; color: var(--text); line-height: 1.35; max-width: 210px; }
-.td-pv   { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--gold); white-space: nowrap; text-align: right; }
-.td-r    { text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
-.muted   { color: var(--text3); }
-
-/* progress */
-.prog { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
-.prog-bg { width: 40px; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
-.prog-fill { height: 5px; border-radius: 3px; }
+/* progress bar */
+.prog { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.prog span { min-width: 20px; text-align: right; }
+.prog-bg { width: 60px; height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
 .g-fill { background: var(--gold); }
 .b-fill { background: var(--blue); }
 
@@ -229,134 +213,64 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
   white-space: nowrap;
 }
 .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.b-zero    { background: var(--red-d);   color: var(--red);   border: 1px solid rgba(224,85,85,0.22); }
-.b-zero::before  { background: var(--red); }
-.b-parcial { background: rgba(212,168,71,0.14); color: var(--gold);  border: 1px solid rgba(212,168,71,0.22); }
+.b-zero    { background: var(--red-d);    color: var(--red);    border: 1px solid rgba(224,85,85,0.22); }
+.b-zero::before   { background: var(--red); }
+.b-parcial { background: var(--gold-d);   color: var(--gold);   border: 1px solid rgba(212,168,71,0.22); }
 .b-parcial::before { background: var(--gold); }
-.b-ok      { background: var(--green-d); color: var(--green); border: 1px solid rgba(78,184,122,0.22); }
-.b-ok::before    { background: var(--green); }
+.b-ok      { background: var(--green-d);  color: var(--green);  border: 1px solid rgba(78,184,122,0.22); }
+.b-ok::before     { background: var(--green); }
+.b-pedido  { background: var(--orange-d); color: var(--orange); border: 1px solid rgba(224,124,58,0.3); }
+.b-pedido::before { background: var(--orange); }
+.b-trans   { background: var(--blue-d);   color: var(--blue);   border: 1px solid rgba(91,141,238,0.3); }
+.b-trans::before  { background: var(--blue); }
 .b-na      { background: rgba(255,255,255,0.04); color: var(--text3); border: 1px solid var(--border); }
-.b-na::before    { background: var(--text3); }
-.b-trans   { background: rgba(91,141,238,0.14); color: var(--blue); border: 1px solid rgba(91,141,238,0.3); }
-.b-trans::before { background: var(--blue); }
+.b-na::before     { background: var(--text3); }
 
-/* novo produto */
+/* tag novo */
 .tag-novo {
   display: inline-flex; align-items: center;
   font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
   background: rgba(78,184,122,0.18); color: var(--green);
   border: 1px solid rgba(78,184,122,0.35);
-  vertical-align: middle; margin-left: 7px; white-space: nowrap;
+  vertical-align: middle; margin-left: 7px;
   animation: pulse-new 2s ease infinite;
 }
-@keyframes pulse-new {
-  0%,100% { opacity: 1; }
-  50%      { opacity: 0.55; }
-}
+@keyframes pulse-new { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
 /* empty */
 .empty { text-align: center; padding: 36px; color: var(--text3); font-size: 13px; }
 
 /* footer */
-.footer {
-  border-top: 1px solid var(--border); margin-top: 48px;
-  padding-top: 20px; display: flex; justify-content: space-between;
-  flex-wrap: wrap; gap: 8px;
-}
-.footer-txt { font-size: 11px; color: var(--text3); letter-spacing: 0.06em; }
-
-/* fade-in rows */
-@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-.kpi { animation: fadeUp 0.35s ease both; }
-.kpi:nth-child(1){animation-delay:.04s}.kpi:nth-child(2){animation-delay:.08s}
-.kpi:nth-child(3){animation-delay:.12s}.kpi:nth-child(4){animation-delay:.16s}
-.kpi:nth-child(5){animation-delay:.20s}.kpi:nth-child(6){animation-delay:.24s}
+.footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; font-size: 11px; color: var(--text3); text-align: center; }
 </style>
-
-<style>
-@media (max-width:768px){
-  body{
-    padding:10px !important;
-  }
-  .grid,.cards,.dashboard{
-    display:flex !important;
-    flex-direction:column !important;
-    gap:12px !important;
-  }
-  .card{
-    width:100% !important;
-    border-radius:18px !important;
-    padding:18px !important;
-  }
-  h1{
-    font-size:42px !important;
-    line-height:0.95 !important;
-  }
-  .metric{
-    font-size:42px !important;
-  }
-  table{
-    font-size:12px !important;
-  }
-}
-</style>
-
 </head>
 <body>
 <div class="wrap">
 
   <!-- HEADER -->
-  <header class="header">
+  <div class="header">
     <div>
-      <div class="eyebrow">Adega Brasil MGA · Projeto 105</div>
-      <h1 class="title">Tropa do<br><span class="highlight">Giro</span></h1>
-      <p class="tagline">F24 Mercadão &nbsp;·&nbsp; F25 Euclides &nbsp;·&nbsp; F26 Atacado</p>
+      <div class="header-title">Tropa do <span>Giro</span> · Adega Brasil MGA</div>
     </div>
-    <div class="date-badge">
-      <div class="date-label">Gerado em</div>
-      <div class="date-val" id="dateVal">—</div>
-    </div>
-  </header>
-
-  <!-- KPIs -->
-  <div class="kpi-grid" id="kpiGrid"></div>
-
-  <!-- ALERTA -->
-  <div class="alert" id="alertBox" style="display:none">
-    <div class="alert-icon">⚠</div>
-    <div>
-      <strong class="alert-strong" id="alertTitle"></strong>
-      <span class="alert-msg" id="alertMsg"></span>
-    </div>
+    <div class="date-badge" id="dateBadge" style="display:flex;flex-direction:column;gap:4px;text-align:right;line-height:1.6"></div>
   </div>
 
-  <!-- CHARTS -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <div class="chart-label">Garrafas Vendidas — F24 Mercadão</div>
-      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:240px;">
-        <div style="font-size:20px;color:#999;letter-spacing:1px;">Mercadão</div>
-        <div id="f24garrafasChart" style="font-size:82px;font-weight:800;color:#d4a847;margin-top:12px;">0</div>
-        <div style="color:#777;margin-top:6px;">garrafas vendidas</div>
-      </div>
-    </div>
+  <!-- KPIs -->
+  <div class="kpis" id="kpis"></div>
 
-    <div class="chart-card">
-      <div class="chart-label">Garrafas Vendidas — F25 Euclides</div>
-      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:240px;">
-        <div style="font-size:20px;color:#999;letter-spacing:1px;">Euclides</div>
-        <div id="f25garrafasChart" style="font-size:82px;font-weight:800;color:#5b8dee;margin-top:12px;">0</div>
-        <div style="color:#777;margin-top:6px;">garrafas vendidas</div>
-      </div>
-    </div>
+  <!-- FILIAL CARDS -->
+  <div class="filial-cards" id="filialCards"></div>
+
+  <!-- CHART FAIXA DE PREÇO -->
+  <div class="charts" style="padding-top:16px">
     <div class="chart-card full">
       <div class="chart-label">Estoque por faixa de preço</div>
       <div class="chart-legend">
         <span><span class="leg" style="background:var(--gold)"></span>F24 Mercadão</span>
         <span><span class="leg" style="background:var(--blue)"></span>F25 Euclides</span>
       </div>
-      <div style="position:relative;height:180px"><canvas id="cPV" role="img" aria-label="Distribuição por faixa de preço"></canvas></div>
+      <div style="position:relative;height:180px"><canvas id="cFaixa"></canvas></div>
     </div>
   </div>
 
@@ -374,10 +288,10 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
       </select>
       <select id="stFilter">
         <option value="all">Todos os status</option>
+        <option value="pedido">🟠 Fazer Pedido F26</option>
+        <option value="trans">↗ Transferir F26</option>
+        <option value="parcial">Vendendo</option>
         <option value="zero">Sem venda</option>
-        <option value="parcial">Venda parcial</option>
-        <option value="ok">Vendido</option>
-        <option value="trans">Transferir F26</option>
         <option value="novo">✦ Produtos novos</option>
       </select>
       <input id="search" type="text" placeholder="Buscar produto ou código...">
@@ -388,12 +302,12 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
           <tr>
             <th onclick="srt('cod')">Cód</th>
             <th onclick="srt('nome')">Produto</th>
-            <th onclick="srt('pv')" style="text-align:right">PV</th>
-            <th style="text-align:right">F24 Est</th>
-            <th style="text-align:right">F24 Vend</th>
-            <th style="text-align:right">F25 Est</th>
-            <th style="text-align:right">F25 Vend</th>
-            <th style="text-align:right">F26</th>
+            <th onclick="srt('pv')" style="text-align:right">Vlr Unit</th>
+            <th style="text-align:right">F24 Estoque</th>
+            <th style="text-align:right">F24 Vendas</th>
+            <th style="text-align:right">F25 Estoque</th>
+            <th style="text-align:right">F25 Vendas</th>
+            <th style="text-align:right">F26 CD</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -402,208 +316,301 @@ tbody td { padding: 12px 14px; vertical-align: middle; }
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <span class="footer-txt">Tropa do Giro · Adega Brasil MGA</span>
-    <span class="footer-txt" id="footerTxt"></span>
-  </div>
-
+  <div class="footer">Adega Brasil MGA · Giro de Estoque · Atualizado em <span id="footerDate"></span></div>
 </div>
-<script>
-// Códigos conhecidos desde o início do projeto (13/05/2026).
-// Qualquer cod fora desta lista será marcado como NOVO.
-const KNOWN_CODES=new Set(["271464","23916","293946","41068","277674","41296","278091","279093","42060","42073","41681","24191","250209","40950","255353","40484","41836","274431","252506","293935","291022","250839","41540","269092","41218","299619","24268","41298","291042","286282","41402","41096","41730","41731","252238","252239","279453","269783","282769","41700","282770","308270","295039","41224","41847","295101","277743","41120","290842","290844"]);
 
+<script>
+// ── KNOWN CODES (desde 13/05/2026) ───────────────────────────────────────────
+const KNOWN_CODES = new Set([
+  "271464","23916","293946","41068","277674","41296","278091","279093",
+  "42060","42073","41681","24191","250209","40950","255353","40484",
+  "41836","274431","252506","293935","291022","250839","41540","269092",
+  "41218","299619","24268","41298","291042","286282","41402","41096",
+  "41730","41731","252238","252239","279453","269783","282769","41700",
+  "282770","308270","295039","41224","41847","295101","277743","41120",
+  "290842","290844"
+]);
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+// f24 = estoque atual F24 · f24v = qtd vendida F24
+// f25 = estoque atual F25 · f25v = qtd vendida F25
+// f26 = estoque CD F26
 const DATA=[
-  {cod:"271464",nome:"Aldeias das Serras Dao Tto · Por",pv:34.9,f24ini:0,f24v:0,f25ini:4,f25v:0,f26:0},
-  {cod:"23916",nome:"Alta Vista Estate Cab Sauv · Arg",pv:59.9,f24ini:2,f24v:1,f25ini:0,f25v:0,f26:0},
-  {cod:"293946",nome:"Altano Symington Tto · Por",pv:84.9,f24ini:5,f24v:0,f25ini:2,f25v:0,f26:18},
-  {cod:"41068",nome:"Aniello Tto Malbec · Arg",pv:68.9,f24ini:0,f24v:0,f25ini:3,f25v:0,f26:0},
-  {cod:"277674",nome:"Aruma Malbec · Arg",pv:129.0,f24ini:0,f24v:0,f25ini:5,f25v:0,f26:0},
-  {cod:"41296",nome:"Aventura · Por",pv:99.0,f24ini:3,f24v:0,f25ini:6,f25v:0,f26:11},
-  {cod:"278091",nome:"Bacalhoa Dom Martino Tto · Por",pv:104.0,f24ini:1,f24v:0,f25ini:3,f25v:0,f26:0},
-  {cod:"279093",nome:"Callia Alta Syrah/Bonarda · Arg",pv:49.9,f24ini:0,f24v:0,f25ini:2,f25v:1,f26:0},
-  {cod:"42060",nome:"Cara Sucia Blend Tinto · Arg",pv:82.9,f24ini:5,f24v:0,f25ini:2,f25v:0,f26:15},
-  {cod:"42073",nome:"Cara Sucia Sangiovese · Arg",pv:82.9,f24ini:4,f24v:0,f25ini:5,f25v:0,f26:6},
-  {cod:"41681",nome:"Carm Douro Tto Res · Por",pv:139.0,f24ini:5,f24v:0,f25ini:2,f25v:0,f26:12},
-  {cod:"24191",nome:"Carmen Insigne Cab Sauv · Chi",pv:74.9,f24ini:2,f24v:0,f25ini:5,f25v:1,f26:29},
-  {cod:"250209",nome:"Cono Sur Cab Sauv 1551 · Chi",pv:35.9,f24ini:0,f24v:0,f25ini:6,f25v:0,f26:0},
-  {cod:"40950",nome:"Dourosa · Por",pv:82.0,f24ini:2,f24v:0,f25ini:4,f25v:0,f26:29},
-  {cod:"255353",nome:"Emiliana Carmenere · Chi",pv:32.0,f24ini:0,f24v:0,f25ini:3,f25v:0,f26:0},
-  {cod:"40484",nome:"Estiba I Cab Sauv · Arg",pv:69.9,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
-  {cod:"41836",nome:"Falorca T Nac · Por",pv:159.0,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
-  {cod:"274431",nome:"Garzon Estate Cab Corte · Uru",pv:72.9,f24ini:5,f24v:0,f25ini:3,f25v:1,f26:10},
-  {cod:"252506",nome:"Las Liebres Bonarda · Arg",pv:62.9,f24ini:0,f24v:0,f25ini:3,f25v:1,f26:0},
-  {cod:"293935",nome:"Luis Pato Baga Touri Nac · Por",pv:119.0,f24ini:5,f24v:2,f25ini:1,f25v:1,f26:10},
-  {cod:"291022",nome:"Marques Atrio Rioja Crianza · Esp",pv:129.0,f24ini:0,f24v:0,f25ini:1,f25v:0,f26:0},
-  {cod:"250839",nome:"Marques Casa Concha P Noir · Chi",pv:109.0,f24ini:1,f24v:0,f25ini:2,f25v:0,f26:0},
-  {cod:"41540",nome:"Miguel T Millapoa Bio Bio · Chi",pv:149.0,f24ini:5,f24v:0,f25ini:5,f25v:0,f26:21},
-  {cod:"269092",nome:"Montes Clas Res Cab Sauv · Chi",pv:99.0,f24ini:3,f24v:0,f25ini:2,f25v:0,f26:17},
-  {cod:"41218",nome:"Montes Seleccion Limitada · Chi",pv:99.0,f24ini:3,f24v:0,f25ini:2,f25v:0,f26:17},
-  {cod:"299619",nome:"Montes Twins Tto · Chi",pv:105.0,f24ini:2,f24v:0,f25ini:2,f25v:1,f26:6},
-  {cod:"24268",nome:"Nampe Tempranillo · Arg",pv:39.9,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
-  {cod:"41298",nome:"O Leao Red Blend · Chi",pv:109.0,f24ini:0,f24v:0,f25ini:2,f25v:0,f26:0},
-  {cod:"291042",nome:"Obikwa Merlot · Afr",pv:52.9,f24ini:4,f24v:1,f25ini:6,f25v:0,f26:29},
-  {cod:"286282",nome:"Procura Vinhas Velhas Tto · Por",pv:299.0,f24ini:1,f24v:0,f25ini:3,f25v:0,f26:6},
-  {cod:"41402",nome:"Protagonista Antigua Bodega · Uru",pv:179.0,f24ini:4,f24v:0,f25ini:4,f25v:0,f26:12},
-  {cod:"41096",nome:"Quinta Chocapalha · Por",pv:89.0,f24ini:6,f24v:0,f25ini:2,f25v:1,f26:6},
-  {cod:"41730",nome:"Ramon Roqueta Crianza · Esp",pv:69.0,f24ini:5,f24v:0,f25ini:3,f25v:0,f26:13},
-  {cod:"41731",nome:"Ramon Roqueta Res · Esp",pv:69.0,f24ini:5,f24v:0,f25ini:1,f25v:0,f26:5},
-  {cod:"252238",nome:"Ruca Malen Cab Sauv · Arg",pv:85.0,f24ini:3,f24v:0,f25ini:3,f25v:1,f26:0},
-  {cod:"252239",nome:"Ruca Malen Malbec · Arg",pv:99.0,f24ini:4,f24v:0,f25ini:5,f25v:0,f26:0},
-  {cod:"279453",nome:"Salentein Numina Gran Corte · Arg",pv:229.0,f24ini:3,f24v:0,f25ini:4,f25v:0,f26:3},
-  {cod:"269783",nome:"Seival Tempranillo · Bra",pv:29.9,f24ini:6,f24v:0,f25ini:6,f25v:0,f26:20},
-  {cod:"282769",nome:"Terranoble Res Cab Sauv · Chi",pv:59.9,f24ini:3,f24v:0,f25ini:3,f25v:0,f26:0},
-  {cod:"41700",nome:"Terranoble Res Merlot · Chi",pv:59.9,f24ini:1,f24v:0,f25ini:5,f25v:0,f26:0},
-  {cod:"282770",nome:"Terranoble Res Sauv Blanc · Chi",pv:59.9,f24ini:8,f24v:0,f25ini:5,f25v:0,f26:2},
-  {cod:"308270",nome:"Terras Santar Tto · Por",pv:44.9,f24ini:6,f24v:0,f25ini:5,f25v:1,f26:26},
-  {cod:"295039",nome:"Tinto Negro Malbec · Arg",pv:49.0,f24ini:2,f24v:0,f25ini:2,f25v:0,f26:0},
-  {cod:"41224",nome:"Uxmal Alto Cab Sauv/Merlot · Arg",pv:79.0,f24ini:9,f24v:1,f25ini:6,f25v:0,f26:6},
-  {cod:"41847",nome:"Val da Ucha Dao Doc · Por",pv:49.9,f24ini:4,f24v:3,f25ini:3,f25v:2,f26:33},
-  {cod:"295101",nome:"Veo Organico Cab Sauv · Chi",pv:49.9,f24ini:0,f24v:0,f25ini:4,f25v:0,f26:0},
-  {cod:"277743",nome:"Vigno Carignan Tto · Chi",pv:98.0,f24ini:11,f24v:0,f25ini:3,f25v:0,f26:29},
-  {cod:"41120",nome:"Vina Maipo Protegid Cab Sauv · Chi",pv:359.0,f24ini:6,f24v:0,f25ini:19,f25v:0,f26:0},
-  {cod:"290842",nome:"Zuccardi Concreto Malbec · Arg",pv:289.0,f24ini:0,f24v:0,f25ini:2,f25v:1,f26:0},
-  {cod:"290844",nome:"Zuccardi Poligono Malb Gualt · Arg",pv:329.0,f24ini:0,f24v:0,f25ini:4,f25v:0,f26:0},
+  {cod:"271464",nome:"Aldeias Das Serras Dao Tto · Por",pv:34.9,f24:0,f24v:0,f25:4,f25v:1,f26:0},
+  {cod:"23916",nome:"Alta Vista Estate Cab Sauv · Arg",pv:59.9,f24:1,f24v:1,f25:0,f25v:3,f26:0},
+  {cod:"293946",nome:"Altano Symington Tto · Por",pv:84.9,f24:5,f24v:0,f25:1,f25v:3,f26:18},
+  {cod:"41068",nome:"Aniello Tto Malbec · Arg",pv:68.9,f24:0,f24v:0,f25:0,f25v:4,f26:0},
+  {cod:"277674",nome:"Aruma Malbec · Arg",pv:129.0,f24:0,f24v:0,f25:3,f25v:2,f26:0},
+  {cod:"41296",nome:"Aventura · Por",pv:99.0,f24:3,f24v:0,f25:6,f25v:0,f26:11},
+  {cod:"278091",nome:"Bacalhoa Dom Martino Tto · Por",pv:104.0,f24:1,f24v:0,f25:3,f25v:0,f26:0},
+  {cod:"279093",nome:"Callia Alta Syrah/Bonarda · Arg",pv:49.9,f24:0,f24v:0,f25:1,f25v:1,f26:0},
+  {cod:"42060",nome:"Cara Sucia Blend Tinto · Arg",pv:82.9,f24:5,f24v:0,f25:2,f25v:0,f26:15},
+  {cod:"42073",nome:"Cara Sucia Sangiovese · Arg",pv:82.9,f24:4,f24v:0,f25:5,f25v:0,f26:6},
+  {cod:"41681",nome:"Carm Douro Tto Res · Por",pv:139.0,f24:5,f24v:1,f25:2,f25v:0,f26:12},
+  {cod:"24191",nome:"Carmen Insigne Cab Sauv · Chi",pv:74.9,f24:1,f24v:1,f25:2,f25v:3,f26:29},
+  {cod:"250209",nome:"Cono Sur Cab Sauv 1551 · Chi",pv:35.9,f24:0,f24v:0,f25:0,f25v:1,f26:0},
+  {cod:"40950",nome:"Dourosa · Por",pv:82.0,f24:2,f24v:0,f25:10,f25v:0,f26:29},
+  {cod:"255353",nome:"Emiliana Carmenere · Chi",pv:32.0,f24:0,f24v:0,f25:3,f25v:2,f26:0},
+  {cod:"40484",nome:"Estiba I Cab Sauv · Arg",pv:69.9,f24:0,f24v:0,f25:1,f25v:1,f26:0},
+  {cod:"41836",nome:"Falorca T Nac · Por",pv:159.0,f24:0,f24v:0,f25:2,f25v:1,f26:0},
+  {cod:"274431",nome:"Garzon Estate Cab Corte Tto · Uru",pv:72.9,f24:4,f24v:1,f25:2,f25v:1,f26:10},
+  {cod:"252506",nome:"Las Liebres Bonarda · Arg",pv:62.9,f24:0,f24v:0,f25:2,f25v:1,f26:0},
+  {cod:"293935",nome:"Luis Pato Baga Touri Nac Igp · Por",pv:119.0,f24:3,f24v:2,f25:0,f25v:2,f26:10},
+  {cod:"291022",nome:"Marques Atrio Rioj Crianza · Esp",pv:129.0,f24:0,f24v:0,f25:1,f25v:0,f26:0},
+  {cod:"250839",nome:"Marques Casa Concha P Noir · Chi",pv:109.0,f24:1,f24v:0,f25:2,f25v:1,f26:0},
+  {cod:"41540",nome:"Miguel T Millapoa Bio Bio · Chi",pv:149.0,f24:5,f24v:0,f25:3,f25v:2,f26:21},
+  {cod:"269092",nome:"Montes Clas Res Cab Sauv · Chi",pv:99.0,f24:1,f24v:2,f25:2,f25v:0,f26:17},
+  {cod:"41218",nome:"Montes Seleccion Limitada Cab/Carm · Chi",pv:99.0,f24:3,f24v:0,f25:2,f25v:0,f26:17},
+  {cod:"299619",nome:"Montes Twins Tto · Chi",pv:105.0,f24:2,f24v:0,f25:1,f25v:1,f26:6},
+  {cod:"24268",nome:"Nampe Tempranillo · Arg",pv:39.9,f24:0,f24v:0,f25:2,f25v:0,f26:0},
+  {cod:"41298",nome:"O Leao Red Blend · Chi",pv:109.0,f24:0,f24v:0,f25:2,f25v:1,f26:0},
+  {cod:"291042",nome:"Obikwa Merlot · Afr",pv:52.9,f24:1,f24v:3,f25:6,f25v:2,f26:29},
+  {cod:"286282",nome:"Procura Vinhas Velhas Tto · Por",pv:299.0,f24:1,f24v:0,f25:3,f25v:0,f26:6},
+  {cod:"41402",nome:"Protagonista Antigua Bodega · Uru",pv:179.0,f24:4,f24v:0,f25:4,f25v:0,f26:12},
+  {cod:"41096",nome:"Quinta Chocapalha · Por",pv:89.0,f24:6,f24v:0,f25:1,f25v:1,f26:6},
+  {cod:"41730",nome:"Ramon Roqueta Crianza · Esp",pv:69.0,f24:5,f24v:0,f25:3,f25v:0,f26:13},
+  {cod:"41731",nome:"Ramon Roqueta Res · Esp",pv:69.0,f24:3,f24v:2,f25:1,f25v:1,f26:5},
+  {cod:"252238",nome:"Ruca Malen Cab Sauv · Arg",pv:85.0,f24:3,f24v:0,f25:2,f25v:1,f26:0},
+  {cod:"252239",nome:"Ruca Malen Malbec · Arg",pv:99.0,f24:3,f24v:2,f25:5,f25v:0,f26:0},
+  {cod:"279453",nome:"Salentein Numina Gran Corte · Arg",pv:229.0,f24:2,f24v:1,f25:4,f25v:1,f26:3},
+  {cod:"269783",nome:"Seival Tempranillo · Bra",pv:29.9,f24:6,f24v:0,f25:6,f25v:2,f26:20},
+  {cod:"282769",nome:"Terranoble Res Cab Sauv · Chi",pv:59.9,f24:2,f24v:1,f25:3,f25v:0,f26:0},
+  {cod:"41700",nome:"Terranoble Res Merlot · Chi",pv:59.9,f24:7,f24v:0,f25:2,f25v:3,f26:0},
+  {cod:"282770",nome:"Terranoble Res Sauv Blanc · Chi",pv:59.9,f24:8,f24v:0,f25:4,f25v:1,f26:2},
+  {cod:"308270",nome:"Terras Santar Tto · Por",pv:44.9,f24:6,f24v:0,f25:5,f25v:10,f26:20},
+  {cod:"295039",nome:"Tinto Negro Malbec · Arg",pv:49.0,f24:2,f24v:0,f25:2,f25v:0,f26:0},
+  {cod:"41224",nome:"Uxmal Alto Cab Sauv/Merlot · Arg",pv:79.0,f24:8,f24v:1,f25:5,f25v:1,f26:0},
+  {cod:"41847",nome:"Val Da Ucha Dao Doc · Por",pv:49.9,f24:0,f24v:10,f25:7,f25v:4,f26:27},
+  {cod:"295101",nome:"Veo Organico Cab Sauv · Chi",pv:49.9,f24:0,f24v:0,f25:4,f25v:0,f26:0},
+  {cod:"277743",nome:"Vigno Carignan Tto · Chi",pv:98.0,f24:11,f24v:0,f25:3,f25v:0,f26:29},
+  {cod:"41120",nome:"Vina Maipo Protegid Cab Sauv · Chi",pv:359.0,f24:6,f24v:0,f25:18,f25v:1,f26:0},
+  {cod:"290842",nome:"Zuccardi Concreto Malbec · Arg",pv:289.0,f24:0,f24v:0,f25:0,f25v:2,f26:0},
+  {cod:"290844",nome:"Zuccardi Poligono Malb Gualt · Arg",pv:329.0,f24:0,f24v:0,f25:4,f25v:0,f26:0},
 ];
 
-// DATE
-const now=new Date();
-document.getElementById('dateVal').textContent=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-document.getElementById('footerTxt').textContent='Semana '+now.toLocaleDateString('pt-BR');
-
-// HELPERS
-function status(d,fil){
-  if(fil==='f24'){
-    const i=d.f24ini,v=d.f24v;
-    if(!i && d.f26>0) return'trans';
-    if(!i)return'na';
-    if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
-  }
-  if(fil==='f25'){
-    const i=d.f25ini,v=d.f25v;
-    if(!i && d.f26>0) return'trans';
-    if(!i)return'na';
-    if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
-  }
-  const i=d.f24ini+d.f25ini,v=d.f24v+d.f25v;
-  if(!i && d.f26>0) return'trans';
-  if(!i)return'na';
-  if(v>=i)return'ok';if(v>0)return'parcial';return'zero';
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function pais(nome) {
+  const m = nome.match(/· (\w+)$/);
+  return m ? m[1] : 'Outro';
 }
 
-// KPIs
-const tot24=DATA.reduce((s,d)=>s+d.f24ini,0);
-const tot25=DATA.reduce((s,d)=>s+d.f25ini,0);
-const tot26=DATA.reduce((s,d)=>s+d.f26,0);
-const cap=DATA.reduce((s,d)=>s+(d.f24ini+d.f25ini)*d.pv,0);
-const sv=DATA.filter(d=>!d.f24v&&!d.f25v&&(d.f24ini+d.f25ini)>0).length;
-const pct=Math.round(sv/DATA.length*100);
+// ── STATUS ────────────────────────────────────────────────────────────────────
+// pedido  = filial zerada E tem F26 disponível → precisa fazer pedido ao CD
+// trans   = filial zerada E NÃO tem F26 → produto parado sem saída
+// parcial = está vendendo (f24v ou f25v > 0)
+// zero    = tem estoque mas não vendeu nada
+// na      = não tem produto nessa filial
+function getStatus(d, fil) {
+  if (fil === 'f24') {
+    if (d.f24 === 0 && d.f24v === 0) return d.f26 > 0 ? 'pedido' : 'na';
+    if (d.f24v > 0) return 'parcial';
+    return 'zero';
+  }
+  if (fil === 'f25') {
+    if (d.f25 === 0 && d.f25v === 0) return d.f26 > 0 ? 'pedido' : 'na';
+    if (d.f25v > 0) return 'parcial';
+    return 'zero';
+  }
+  // ambas
+  const zF24 = d.f24 === 0, zF25 = d.f25 === 0;
+  if (zF24 || zF25) {
+    if (d.f26 > 0) return 'pedido';
+  }
+  if (d.f24 === 0 && d.f25 === 0 && d.f26 === 0) return 'na';
+  if (d.f24v > 0 || d.f25v > 0) return 'parcial';
+  return 'zero';
+}
 
-document.getElementById('kpiGrid').innerHTML=`
-<div class="kpi c-gold"><div class="kpi-label">Produtos monitorados</div><div class="kpi-val gold">${DATA.length}</div><div class="kpi-sub">SKUs únicos</div></div>
-<div class="kpi c-gold"><div class="kpi-label">Estoque F24</div><div class="kpi-val">${tot24}</div><div class="kpi-sub">Mercadão</div></div>
-<div class="kpi c-blue"><div class="kpi-label">Estoque F25</div><div class="kpi-val blue">${tot25}</div><div class="kpi-sub">Euclides</div></div>
-<div class="kpi c-green"><div class="kpi-label">Atacado F26</div><div class="kpi-val green">${tot26}</div><div class="kpi-sub">Unidades</div></div>
-<div class="kpi c-red"><div class="kpi-label">Capital parado</div><div class="kpi-val red">R$&nbsp;${Math.round(cap/1000)}k</div><div class="kpi-sub">F24+F25 × PV</div></div>
-<div class="kpi c-red"><div class="kpi-label">Sem venda</div><div class="kpi-val red">${sv} <span style="font-size:15px;color:var(--text3)">(${pct}%)</span></div><div class="kpi-sub">produtos parados</div></div>
+function badgeHtml(st) {
+  if (st === 'pedido')  return '<span class="badge b-pedido">🟠 Fazer Pedido</span>';
+  if (st === 'trans')   return '<span class="badge b-trans">↗ Transferir</span>';
+  if (st === 'parcial') return '<span class="badge b-ok">✓ Vendendo</span>';
+  if (st === 'zero')    return '<span class="badge b-zero">Sem venda</span>';
+  return '<span class="badge b-na">—</span>';
+}
+
+// ── DATE ──────────────────────────────────────────────────────────────────────
+const START_DATE = new Date('2026-05-13T00:00:00');
+const now = new Date();
+const diasTrabalhados = Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24));
+const horaAtual = now.toLocaleString('pt-BR', {day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+document.getElementById('dateBadge').innerHTML = `
+  <span>📅 Início: 13 de maio de 2026</span>
+  <span style="color:var(--text2)">🕐 Atualizado: ${horaAtual}</span>
+  <span style="color:var(--gold)">⏱ ${diasTrabalhados} dias em monitoramento</span>
 `;
+document.getElementById('footerDate').textContent = horaAtual;
 
-if(sv>0){
-  document.getElementById('alertBox').style.display='flex';
-  document.getElementById('alertTitle').textContent=`${sv} produto${sv>1?'s':''} sem nenhuma venda registrada`;
-  document.getElementById('alertMsg').textContent=`Esses itens estão com estoque ativo mas sem saída no período. Capital estimado parado: R$ ${cap.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}. Acionar equipe comercial.`;
+// ── KPIs ──────────────────────────────────────────────────────────────────────
+function buildKpis() {
+  const d = DATA;
+  const skus       = d.length;
+  const totalF24   = d.reduce((s,x)=>s+x.f24,0);
+  const totalF25   = d.reduce((s,x)=>s+x.f25,0);
+  const totalF26   = d.reduce((s,x)=>s+x.f26,0);
+  const totalUnid  = totalF24 + totalF25;
+  const semVenda   = d.filter(x=>getStatus(x,'all')==='zero').length;
+  const pctParado  = Math.round(semVenda/skus*100);
+  const pedidos    = d.filter(x=>getStatus(x,'all')==='pedido').length;
+
+  document.getElementById('kpis').innerHTML = `
+    <div class="kpi"><div class="kpi-label">SKUs Únicos</div><div class="kpi-val gold">${skus}</div><div class="kpi-sub">rótulos monitorados</div></div>
+    <div class="kpi"><div class="kpi-label">F24 Mercadão</div><div class="kpi-val gold">${totalF24}</div><div class="kpi-sub">garrafas em loja</div></div>
+    <div class="kpi"><div class="kpi-label">F25 Euclides</div><div class="kpi-val blue">${totalF25}</div><div class="kpi-sub">garrafas em loja</div></div>
+    <div class="kpi"><div class="kpi-label">Unidades</div><div class="kpi-val" style="color:var(--green)">${totalUnid}</div><div class="kpi-sub">F24 + F25 nas lojas</div></div>
+    <div class="kpi"><div class="kpi-label">Sem venda</div><div class="kpi-val red">${semVenda} <span style="font-size:15px;color:var(--text3)">(${pctParado}%)</span></div><div class="kpi-sub">produtos parados</div></div>
+    <div class="kpi"><div class="kpi-label">Fazer Pedido</div><div class="kpi-val orange">${pedidos}</div><div class="kpi-sub">aguardam F26</div></div>
+  `;
 }
+buildKpis();
 
-// TABLE
-let sk='',sd=1;
-function srt(k){sk===k?sd*=-1:(sk=k,sd=1);render();}
+// ── TABLE ─────────────────────────────────────────────────────────────────────
+let sk = '', sd = 1;
+function srt(k) { sd = sk===k ? -sd : 1; sk = k; render(); }
 
-function badgeHtml(st){
-  if(st==='zero')return'<span class="badge b-zero">Sem venda</span>';
-  if(st==='parcial')return'<span class="badge b-parcial">Parcial</span>';
-  if(st==='ok')return'<span class="badge b-ok">Vendido</span>';
-  if(st==='trans')return'<span class="badge b-trans">↗ Transferir F26</span>';
-  return'<span class="badge b-na">—</span>';
-}
+function render() {
+  const fil = document.getElementById('filFilter').value;
+  const st  = document.getElementById('stFilter').value;
+  const q   = document.getElementById('search').value.toLowerCase();
+  let d = [...DATA];
 
-function render(){
-  const fil=document.getElementById('filFilter').value;
-  const st=document.getElementById('stFilter').value;
-  const q=document.getElementById('search').value.toLowerCase();
-  let d=[...DATA];
-  if(q) d=d.filter(x=>x.nome.toLowerCase().includes(q)||x.cod.includes(q));
-  if(st==='novo') d=d.filter(x=>!KNOWN_CODES.has(x.cod));
-  else if(st!=='all') d=d.filter(x=>status(x,fil)===st);
-  if(fil==='f24') d=d.filter(x=>x.f24ini>0||x.f24v>0);
-  if(fil==='f25') d=d.filter(x=>x.f25ini>0||x.f25v>0);
-  if(sk) d.sort((a,b)=>{
-    let av=sk==='pv'?a.pv:sk==='cod'?a.cod:a.nome;
-    let bv=sk==='pv'?b.pv:sk==='cod'?b.cod:b.nome;
-    return(typeof av==='number'?(av-bv):(av.localeCompare(bv)))*sd;
+  if (q) d = d.filter(x => x.nome.toLowerCase().includes(q) || x.cod.includes(q));
+  if (st === 'novo')  d = d.filter(x => !KNOWN_CODES.has(x.cod));
+  else if (st !== 'all') d = d.filter(x => getStatus(x, fil) === st);
+
+  if (fil === 'f24') d = d.filter(x => x.f24 > 0 || x.f24v !== 0);
+  if (fil === 'f25') d = d.filter(x => x.f25 > 0 || x.f25v !== 0);
+
+  if (sk) d.sort((a,b) => {
+    if (sk === 'pv') return (a.pv - b.pv) * sd;
+    const av = sk==='cod' ? a.cod : a.nome;
+    const bv = sk==='cod' ? b.cod : b.nome;
+    return av.localeCompare(bv) * sd;
   });
-  document.getElementById('countLbl').textContent=`${d.length} produto${d.length!==1?'s':''}`;
-  const tb=document.getElementById('tbody');
-  if(!d.length){tb.innerHTML='<tr><td colspan="9" class="empty">Nenhum produto encontrado.</td></tr>';return;}
-  tb.innerHTML=d.map(x=>{
-    const p4=x.f24ini?Math.round(x.f24v/x.f24ini*100):0;
-    const p5=x.f25ini?Math.round(x.f25v/x.f25ini*100):0;
-    const n4=x.f24ini||'<span class="muted">—</span>';
-    const n5=x.f25ini||'<span class="muted">—</span>';
-    const n6=x.f26||'<span class="muted">—</span>';
-    const novoTag=!KNOWN_CODES.has(x.cod)?'<span class="tag-novo">✦ Novo</span>':'';
-    return`<tr>
+
+  document.getElementById('countLbl').textContent = `${d.length} produto${d.length!==1?'s':''}`;
+  const tb = document.getElementById('tbody');
+  if (!d.length) {
+    tb.innerHTML = '<tr><td colspan="9" class="empty">Nenhum produto encontrado.</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = d.map(x => {
+    const v4 = Math.max(x.f24v, 0);
+    const v5 = Math.max(x.f25v, 0);
+    const pct4 = x.f24 > 0 ? Math.min(Math.round(v4 / (x.f24 + v4) * 100), 100) : 0;
+    const pct5 = x.f25 > 0 ? Math.min(Math.round(v5 / (x.f25 + v5) * 100), 100) : 0;
+    const n4   = x.f24 || '<span class="muted">—</span>';
+    const n5   = x.f25 || '<span class="muted">—</span>';
+    const n6   = x.f26 || '<span class="muted">—</span>';
+    const novo = !KNOWN_CODES.has(x.cod) ? '<span class="tag-novo">✦ Novo</span>' : '';
+    const st   = getStatus(x, fil);
+    return `<tr>
 <td class="td-cod">${x.cod}</td>
-<td class="td-name">${x.nome}${novoTag}</td>
-<td class="td-pv">R$&nbsp;${x.pv.toFixed(2).replace('.',',')}</td>
+<td class="td-name">${x.nome}${novo}</td>
+<td class="td-r" style="color:var(--text2);font-size:12px">R$&nbsp;${x.pv.toFixed(2).replace('.',',')}</td>
 <td class="td-r">${n4}</td>
-<td class="td-r"><div class="prog"><span>${x.f24v}</span><div class="prog-bg"><div class="prog-fill g-fill" style="width:${p4}%"></div></div></div></td>
+<td class="td-r"><div class="prog"><span>${v4 > 0 ? v4 : '—'}</span><div class="prog-bg"><div class="prog-fill g-fill" style="width:${pct4}%"></div></div></div></td>
 <td class="td-r">${n5}</td>
-<td class="td-r"><div class="prog"><span>${x.f25v}</span><div class="prog-bg"><div class="prog-fill b-fill" style="width:${p5}%"></div></div></div></td>
+<td class="td-r"><div class="prog"><span>${v5 > 0 ? v5 : '—'}</span><div class="prog-bg"><div class="prog-fill b-fill" style="width:${pct5}%"></div></div></div></td>
 <td class="td-r">${n6}</td>
-<td>${badgeHtml(status(x,fil))}</td>
+<td>${badgeHtml(st)}</td>
 </tr>`;
   }).join('');
 }
-['filFilter','stFilter','search'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+
+['filFilter','stFilter','search'].forEach(id =>
+  document.getElementById(id).addEventListener('input', render)
+);
 render();
 
-// CHARTS
-const mono="'IBM Plex Mono',monospace";
-const tickStyle={color:'#5a5753',font:{family:mono,size:10}};
-const gridStyle={color:'rgba(255,255,255,0.05)'};
-const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}};
+// ── FILIAL CARDS ──────────────────────────────────────────────────────────────
+function buildFilialCards() {
+  const vendasF24  = DATA.reduce((s,d)=>s+(d.f24v>0?d.f24v:0),0);
+  const vendasF25  = DATA.reduce((s,d)=>s+(d.f25v>0?d.f25v:0),0);
+  const rotulosF24 = DATA.filter(d=>d.f24v>0).length;
+  const rotulosF25 = DATA.filter(d=>d.f25v>0).length;
+  const totalGarrafas = vendasF24 + vendasF25;
+  const valorF24 = DATA.reduce((s,d)=>s+(d.f24v>0?d.f24v*d.pv:0),0);
+  const valorF25 = DATA.reduce((s,d)=>s+(d.f25v>0?d.f25v*d.pv:0),0);
+  const valorTotal = valorF24 + valorF25;
+  const fmtBRL = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-// Build price-range chart data
-const bands=[{l:'Até R$50',min:0,max:50},{l:'R$51–80',min:50,max:80},{l:'R$81–110',min:80,max:110},{l:'R$111–160',min:110,max:160},{l:'R$161+',min:160,max:Infinity}];
-const fx=bands.map(b=>b.l);
-const v24=bands.map(b=>DATA.filter(d=>d.pv>b.min&&d.pv<=b.max).reduce((s,d)=>s+d.f24ini,0));
-const v25=bands.map(b=>DATA.filter(d=>d.pv>b.min&&d.pv<=b.max).reduce((s,d)=>s+d.f25ini,0));
+  document.getElementById('filialCards').innerHTML = `
+    <div class="filial-card">
+      <div class="filial-card-label">Garrafas Vendidas — F24 Mercadão</div>
+      <div class="filial-card-name" style="color:var(--gold)">Mercadão</div>
+      <div class="filial-card-num" style="color:var(--gold)">${vendasF24}</div>
+      <div class="filial-card-sub">garrafas vendidas · ${fmtBRL(valorF24)}</div>
+      <hr class="filial-card-divider">
+      <div class="filial-card-row">
+        <div class="filial-card-row-num" style="color:var(--gold)">${rotulosF24}</div>
+        <div class="filial-card-row-label">rótulos diferentes vendidos</div>
+      </div>
+    </div>
+    <div class="filial-card">
+      <div class="filial-card-label">Garrafas Vendidas — F25 Euclides</div>
+      <div class="filial-card-name" style="color:var(--blue)">Euclides</div>
+      <div class="filial-card-num" style="color:var(--blue)">${vendasF25}</div>
+      <div class="filial-card-sub">garrafas vendidas · ${fmtBRL(valorF25)}</div>
+      <hr class="filial-card-divider">
+      <div class="filial-card-row">
+        <div class="filial-card-row-num" style="color:var(--blue)">${rotulosF25}</div>
+        <div class="filial-card-row-label">rótulos diferentes vendidos</div>
+      </div>
+    </div>
+    <div class="filial-card" style="grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;padding:20px 28px;">
+      <div>
+        <div class="filial-card-label">Total do período · desde 13/05/2026</div>
+        <div style="display:flex;align-items:baseline;gap:16px;margin-top:4px;">
+          <div class="filial-card-row-num" style="color:var(--green);font-size:42px">${totalGarrafas}</div>
+          <div class="filial-card-row-label">garrafas vendidas (F24 + F25)</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="filial-card-label">Valor total vendido</div>
+        <div style="font-family:var(--font-h);font-size:32px;font-weight:800;color:var(--green);margin-top:4px">${fmtBRL(valorTotal)}</div>
+      </div>
+    </div>
+  `;
+}
+buildFilialCards();
 
-new Chart(document.getElementById('cPV'),{type:'bar',data:{
-  labels:fx,
-  datasets:[
-    {label:'F24',data:v24,backgroundColor:'rgba(212,168,71,0.65)',borderColor:'#d4a847',borderWidth:1,borderRadius:4},
-    {label:'F25',data:v25,backgroundColor:'rgba(91,141,238,0.65)',borderColor:'#5b8dee',borderWidth:1,borderRadius:4}
-  ]
-},options:{...base,scales:{x:{grid:{display:false},ticks:tickStyle},y:{grid:gridStyle,ticks:tickStyle}}}});
+// ── CHART FAIXA DE PREÇO ──────────────────────────────────────────────────────
+const mono = "'IBM Plex Mono',monospace";
+const tickStyle = { color:'#5a5753', font:{family:mono, size:10} };
+const gridStyle = { color:'rgba(255,255,255,0.05)' };
+
+const bands = [
+  {l:'Até R$50', min:0,   max:50},
+  {l:'R$51–80',  min:50,  max:80},
+  {l:'R$81–110', min:80,  max:110},
+  {l:'R$111–160',min:110, max:160},
+  {l:'R$161+',   min:160, max:Infinity},
+];
+new Chart(document.getElementById('cFaixa'), {
+  type: 'bar',
+  data: {
+    labels: bands.map(b=>b.l),
+    datasets: [
+      {
+        label:'F24',
+        data: bands.map(b=>DATA.filter(d=>d.pv>b.min&&d.pv<=b.max).reduce((s,d)=>s+d.f24,0)),
+        backgroundColor:'rgba(212,168,71,0.65)', borderColor:'#d4a847', borderWidth:1, borderRadius:5
+      },
+      {
+        label:'F25',
+        data: bands.map(b=>DATA.filter(d=>d.pv>b.min&&d.pv<=b.max).reduce((s,d)=>s+d.f25,0)),
+        backgroundColor:'rgba(91,141,238,0.65)', borderColor:'#5b8dee', borderWidth:1, borderRadius:5
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{grid:{display:false},ticks:tickStyle},y:{grid:gridStyle,ticks:tickStyle}}
+  }
+});
 </script>
-
-
-
-
-<script>
-try{
-const totalF24 = DATA.reduce((a,b)=>a+(Number(b.f24v)||0),0);
-const totalF25 = DATA.reduce((a,b)=>a+(Number(b.f25v)||0),0);
-
-const f24El=document.getElementById('f24garrafasChart');
-const f25El=document.getElementById('f25garrafasChart');
-
-if(f24El) f24El.innerHTML=totalF24.toLocaleString('pt-BR');
-if(f25El) f25El.innerHTML=totalF25.toLocaleString('pt-BR');
-}catch(e){console.log(e)}
-</script>
-
 </body>
 </html>
